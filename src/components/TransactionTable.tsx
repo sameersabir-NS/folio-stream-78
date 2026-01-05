@@ -30,7 +30,7 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
 
   if (transactions.length === 0) {
     return (
-      <div className="py-8 text-center">
+      <div className="py-8 text-center animate-fade-in">
         <p className="text-xs text-muted-foreground">
           {type === "charges" ? "No charges found" : "No payments found"}
         </p>
@@ -59,14 +59,21 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions.map((transaction) => (
+        {transactions.map((transaction, index) => (
           <TableRow
             key={transaction.id}
-            className="border-border hover:bg-table-row-hover"
+            className={cn(
+              "border-border transition-all duration-150 cursor-default",
+              "hover:bg-primary/5 hover:shadow-sm",
+              index % 2 === 1 && "bg-muted/30"
+            )}
+            style={{ animationDelay: `${index * 30}ms` }}
           >
             {showFolioColumn && (
-              <TableCell className="text-xs py-2 px-3 text-primary font-medium">
-                {transaction.folioNumber}
+              <TableCell className="text-xs py-2 px-3 font-medium">
+                <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-semibold">
+                  {transaction.folioNumber}
+                </span>
               </TableCell>
             )}
             <TableCell className="text-xs py-2 px-3 text-muted-foreground whitespace-nowrap">
@@ -77,8 +84,8 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
             </TableCell>
             <TableCell
               className={cn(
-                "text-xs py-2 px-3 text-right tabular-nums",
-                type === "payments" && "text-success font-medium"
+                "text-xs py-2 px-3 text-right tabular-nums font-medium",
+                type === "payments" && "text-success"
               )}
             >
               {formatAmount(transaction.amount)}

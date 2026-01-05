@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
+import { Search, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Folio } from "@/types/folio";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,8 @@ export function FolioSidebar({
     }
   };
 
+  const selectedCount = selectedIds.length;
+
   return (
     <div className="flex h-full w-56 flex-col border-r border-border bg-card">
       {/* Header with search */}
@@ -56,13 +59,23 @@ export function FolioSidebar({
             placeholder="Search folios..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-8 text-xs"
+            className="pl-8 h-8 text-xs transition-shadow focus:shadow-md"
           />
         </div>
         
-        {/* Multi-select toggle */}
+        {/* Multi-select toggle with count badge */}
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground">Compare Multiple</Label>
+          <div className="flex items-center gap-2">
+            <Label className="text-xs text-muted-foreground">Compare Multiple</Label>
+            {multiSelect && selectedCount > 0 && (
+              <Badge 
+                variant="secondary" 
+                className="h-5 px-1.5 text-[10px] font-semibold bg-primary text-primary-foreground animate-scale-in"
+              >
+                {selectedCount}
+              </Badge>
+            )}
+          </div>
           <Switch
             checked={multiSelect}
             onCheckedChange={onMultiSelectChange}
@@ -75,34 +88,56 @@ export function FolioSidebar({
       <ScrollArea className="flex-1">
         <div className="p-1.5">
           {filteredFolios.length === 0 ? (
-            <div className="px-3 py-6 text-center">
+            <div className="px-3 py-6 text-center animate-fade-in">
               <p className="text-xs text-muted-foreground">No folios found</p>
             </div>
           ) : (
             <div className="space-y-0.5">
-              {filteredFolios.map((folio) => {
+              {filteredFolios.map((folio, index) => {
                 const isSelected = selectedIds.includes(folio.id);
                 return (
                   <button
                     key={folio.id}
                     onClick={() => handleFolioClick(folio.id)}
                     className={cn(
-                      "w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-colors text-xs",
-                      "hover:bg-muted/50",
-                      isSelected && "bg-primary/10 text-primary font-medium"
+                      "w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-all duration-150 text-xs group",
+                      "hover:bg-muted/70 hover:shadow-sm",
+                      isSelected && "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20",
+                      index % 2 === 1 && !isSelected && "bg-muted/20"
                     )}
+                    style={{ animationDelay: `${index * 15}ms` }}
                   >
-                    <span className="font-medium">{folio.number}</span>
+                    {/* Checkbox indicator for multi-select */}
+                    {multiSelect && (
+                      <span 
+                        className={cn(
+                          "flex-shrink-0 h-3.5 w-3.5 rounded border flex items-center justify-center transition-all duration-150",
+                          isSelected 
+                            ? "bg-primary border-primary" 
+                            : "border-muted-foreground/30 group-hover:border-primary/50"
+                        )}
+                      >
+                        {isSelected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
+                      </span>
+                    )}
+                    
+                    <span className={cn("font-medium", isSelected && "text-primary")}>{folio.number}</span>
                     <span className="text-muted-foreground">-</span>
                     <span className="truncate flex-1">{folio.name}</span>
                     
                     {/* Activity indicators */}
                     <div className="flex gap-1 flex-shrink-0">
                       {folio.hasRecentCharges && (
-                        <span className="h-1.5 w-1.5 rounded-full bg-destructive" title="Has charges" />
+                        <span 
+                          className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" 
+                          title="Has charges" 
+                        />
                       )}
                       {folio.hasRecentPayments && (
-                        <span className="h-1.5 w-1.5 rounded-full bg-success" title="Has payments" />
+                        <span 
+                          className="h-1.5 w-1.5 rounded-full bg-success" 
+                          title="Has payments" 
+                        />
                       )}
                     </div>
                   </button>
