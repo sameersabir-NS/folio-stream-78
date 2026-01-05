@@ -1,12 +1,49 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { FolioSidebar } from "@/components/FolioSidebar";
+import { TransactionWorkspace } from "@/components/TransactionWorkspace";
+import { mockFolios } from "@/data/mockFolios";
 
 const Index = () => {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [multiSelect, setMultiSelect] = useState(false);
+
+  const handleMultiSelectChange = (value: boolean) => {
+    setMultiSelect(value);
+    if (!value && selectedIds.length > 1) {
+      // Keep only the first selected when disabling multi-select
+      setSelectedIds([selectedIds[0]]);
+    }
+  };
+
+  const handleRemoveSelection = (id: string) => {
+    setSelectedIds(selectedIds.filter((sid) => sid !== id));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedIds([]);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex h-screen w-full overflow-hidden bg-background">
+      {/* Sidebar */}
+      <FolioSidebar
+        folios={mockFolios}
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        multiSelect={multiSelect}
+        onMultiSelectChange={handleMultiSelectChange}
+      />
+
+      {/* Main workspace */}
+      <main className="flex-1 overflow-hidden">
+        <TransactionWorkspace
+          folios={mockFolios}
+          selectedIds={selectedIds}
+          allFolios={mockFolios}
+          onRemoveSelection={handleRemoveSelection}
+          onClearSelection={handleClearSelection}
+        />
+      </main>
     </div>
   );
 };
