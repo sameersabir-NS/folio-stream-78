@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
-import { Search, Layers, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Folio } from "@/types/folio";
 import { cn } from "@/lib/utils";
@@ -46,73 +46,37 @@ export function FolioSidebar({
     }
   };
 
-  const selectedCount = selectedIds.length;
-  const totalCharges = folios.filter((f) => f.hasRecentCharges).length;
-  const totalPayments = folios.filter((f) => f.hasRecentPayments).length;
-
   return (
-    <div className="flex h-full w-72 flex-col bg-sidebar border-r border-sidebar-border">
-      {/* Header */}
-      <div className="flex-shrink-0 p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary">
-            <Layers className="h-4 w-4 text-sidebar-primary-foreground" />
-          </div>
-          <div>
-            <h2 className="text-sm font-semibold text-sidebar-accent-foreground">Folios</h2>
-            <p className="text-xs text-sidebar-muted">{folios.length} total</p>
-          </div>
-        </div>
-
-        {/* Search */}
+    <div className="flex h-full w-56 flex-col border-r border-border bg-card">
+      {/* Header with search */}
+      <div className="flex-shrink-0 p-3 border-b border-border space-y-3">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sidebar-muted" />
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search folios..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-sidebar-accent border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-muted focus-visible:ring-sidebar-ring"
+            className="pl-8 h-8 text-xs"
           />
         </div>
-      </div>
-
-      {/* Multi-select toggle */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-sidebar-border">
+        
+        {/* Multi-select toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-sidebar-foreground">Compare Multiple</span>
+          <Label className="text-xs text-muted-foreground">Compare Multiple</Label>
           <Switch
             checked={multiSelect}
             onCheckedChange={onMultiSelectChange}
-            className="data-[state=checked]:bg-sidebar-primary"
+            className="scale-75"
           />
-        </div>
-        {multiSelect && selectedCount > 0 && (
-          <p className="mt-1 text-xs text-sidebar-muted">
-            {selectedCount} selected
-          </p>
-        )}
-      </div>
-
-      {/* Stats */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-sidebar-border">
-        <div className="flex gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-badge-charge" />
-            <span className="text-xs text-sidebar-muted">{totalCharges} charges</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-badge-payment" />
-            <span className="text-xs text-sidebar-muted">{totalPayments} payments</span>
-          </div>
         </div>
       </div>
 
       {/* Folio List */}
-      <ScrollArea className="flex-1 sidebar-scrollbar">
-        <div className="p-2">
+      <ScrollArea className="flex-1">
+        <div className="p-1.5">
           {filteredFolios.length === 0 ? (
-            <div className="px-3 py-8 text-center">
-              <p className="text-sm text-sidebar-muted">No folios found</p>
+            <div className="px-3 py-6 text-center">
+              <p className="text-xs text-muted-foreground">No folios found</p>
             </div>
           ) : (
             <div className="space-y-0.5">
@@ -123,58 +87,24 @@ export function FolioSidebar({
                     key={folio.id}
                     onClick={() => handleFolioClick(folio.id)}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-150",
-                      "hover:bg-sidebar-accent group",
-                      isSelected && "bg-sidebar-accent ring-1 ring-sidebar-primary"
+                      "w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-colors text-xs",
+                      "hover:bg-muted/50",
+                      isSelected && "bg-primary/10 text-primary font-medium"
                     )}
                   >
-                    {/* Number badge */}
-                    <span
-                      className={cn(
-                        "flex-shrink-0 flex h-7 w-7 items-center justify-center rounded-md text-xs font-medium transition-colors",
-                        isSelected
-                          ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                          : "bg-sidebar-border text-sidebar-foreground"
+                    <span className="font-medium">{folio.number}</span>
+                    <span className="text-muted-foreground">-</span>
+                    <span className="truncate flex-1">{folio.name}</span>
+                    
+                    {/* Activity indicators */}
+                    <div className="flex gap-1 flex-shrink-0">
+                      {folio.hasRecentCharges && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-destructive" title="Has charges" />
                       )}
-                    >
-                      {folio.number}
-                    </span>
-
-                    {/* Name and indicators */}
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={cn(
-                          "text-sm font-medium truncate transition-colors",
-                          isSelected ? "text-sidebar-accent-foreground" : "text-sidebar-foreground"
-                        )}
-                      >
-                        {folio.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        {folio.hasRecentCharges && (
-                          <span className="flex items-center gap-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-badge-charge" />
-                            <span className="text-[10px] text-sidebar-muted">Charges</span>
-                          </span>
-                        )}
-                        {folio.hasRecentPayments && (
-                          <span className="flex items-center gap-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-badge-payment" />
-                            <span className="text-[10px] text-sidebar-muted">Payments</span>
-                          </span>
-                        )}
-                      </div>
+                      {folio.hasRecentPayments && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-success" title="Has payments" />
+                      )}
                     </div>
-
-                    {/* Selection indicator */}
-                    <ChevronRight
-                      className={cn(
-                        "h-4 w-4 flex-shrink-0 transition-all",
-                        isSelected
-                          ? "text-sidebar-primary opacity-100"
-                          : "text-sidebar-muted opacity-0 group-hover:opacity-100"
-                      )}
-                    />
                   </button>
                 );
               })}
