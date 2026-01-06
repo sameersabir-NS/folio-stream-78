@@ -2,6 +2,7 @@ import { TransactionTable } from "./TransactionTable";
 import { Transaction } from "@/types/folio";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { CreditCard, Wallet } from "lucide-react";
 
 interface TransactionCardProps {
   title: string;
@@ -25,23 +26,29 @@ export function TransactionCard({
     )}>
       {/* Header */}
       <div className={cn(
-        "flex-shrink-0 px-3 py-2 border-b border-border bg-table-header",
+        "flex-shrink-0 px-3 py-3 border-b border-border bg-table-header",
         "flex items-center justify-between"
       )}>
-        <div className="flex items-center gap-2">
-          <span 
-            className={cn(
-              "h-2 w-2 rounded-full",
-              type === "charges" ? "bg-destructive" : "bg-success"
-            )} 
-          />
-          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-            {title}
-          </h3>
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            "p-2 rounded-lg",
+            type === "charges" ? "bg-destructive/10" : "bg-success/10"
+          )}>
+            {type === "charges" ? (
+              <CreditCard className="h-4 w-4 text-destructive" />
+            ) : (
+              <Wallet className="h-4 w-4 text-success" />
+            )}
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              {title}
+            </h3>
+            <p className="text-[10px] text-muted-foreground">
+              {transactions.length} transaction{transactions.length !== 1 && "s"}
+            </p>
+          </div>
         </div>
-        <span className="text-[10px] text-muted-foreground font-medium bg-muted px-1.5 py-0.5 rounded">
-          {transactions.length} item{transactions.length !== 1 && "s"}
-        </span>
       </div>
 
       {/* Table content */}
