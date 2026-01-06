@@ -60,7 +60,7 @@ export function TransactionWorkspace({
       {/* Selected folios header - only show when multiple selected */}
       {isMultiSelect && (
         <div className="flex-shrink-0 px-4 py-2 border-b border-border bg-muted/30 flex items-center gap-2 animate-fade-in">
-          <span className="text-xs text-muted-foreground">Comparing:</span>
+          <span className="text-xs text-muted-foreground">Selected:</span>
           <div className="flex flex-wrap gap-1.5">
             {selectedFolios.map((folio) => (
               <Badge
