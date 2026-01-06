@@ -100,33 +100,15 @@ export function FolioSidebar({
                     key={folio.id}
                     onClick={() => handleFolioClick(folio.id)}
                     className={cn(
-                      "w-full flex items-center gap-2 px-2 py-1.5 rounded text-left transition-all duration-150 text-xs group",
+                      "w-full flex items-center gap-1.5 px-2 py-1.5 rounded text-left transition-all duration-150 text-xs group",
                       "hover:bg-muted/70 hover:shadow-sm",
                       isSelected && "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20",
                       index % 2 === 1 && !isSelected && "bg-muted/20"
                     )}
                     style={{ animationDelay: `${index * 15}ms` }}
                   >
-                    {/* Checkbox indicator for multi-select */}
-                    {multiSelect && (
-                      <span 
-                        className={cn(
-                          "flex-shrink-0 h-3.5 w-3.5 rounded border flex items-center justify-center transition-all duration-150",
-                          isSelected 
-                            ? "bg-primary border-primary" 
-                            : "border-muted-foreground/30 group-hover:border-primary/50"
-                        )}
-                      >
-                        {isSelected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
-                      </span>
-                    )}
-                    
-                    <span className={cn("font-medium", isSelected && "text-primary")}>{folio.number}</span>
-                    <span className="text-muted-foreground">-</span>
-                    <span className="truncate flex-1">{folio.name}</span>
-                    
-                    {/* Activity indicators */}
-                    <div className="flex gap-1 flex-shrink-0">
+                    {/* Activity indicators - always on left */}
+                    <div className="flex gap-0.5 flex-shrink-0 w-4 justify-center">
                       {folio.hasRecentCharges && (
                         <span 
                           className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" 
@@ -140,6 +122,24 @@ export function FolioSidebar({
                         />
                       )}
                     </div>
+
+                    {/* Checkbox space - always reserved, only filled when multiSelect */}
+                    <span 
+                      className={cn(
+                        "flex-shrink-0 h-3.5 w-3.5 rounded border flex items-center justify-center transition-all duration-150",
+                        multiSelect 
+                          ? isSelected 
+                            ? "bg-primary border-primary" 
+                            : "border-muted-foreground/30 group-hover:border-primary/50"
+                          : "border-transparent"
+                      )}
+                    >
+                      {multiSelect && isSelected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
+                    </span>
+                    
+                    <span className={cn("font-medium", isSelected && "text-primary")}>{folio.number}</span>
+                    <span className="text-muted-foreground">-</span>
+                    <span className="truncate flex-1">{folio.name}</span>
                   </button>
                 );
               })}
