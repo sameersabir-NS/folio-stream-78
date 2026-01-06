@@ -66,7 +66,7 @@ export function FolioSidebar({
         {/* Multi-select toggle with count badge */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Label className="text-xs text-muted-foreground">Compare Multiple</Label>
+            <Label className="text-xs text-muted-foreground">Select Multiple</Label>
             {multiSelect && selectedCount > 0 && (
               <Badge 
                 variant="secondary" 
@@ -86,7 +86,7 @@ export function FolioSidebar({
 
       {/* Folio List */}
       <ScrollArea className="flex-1">
-        <div className="p-1.5">
+        <div className="p-1.5 pr-4">
           {filteredFolios.length === 0 ? (
             <div className="px-3 py-6 text-center animate-fade-in">
               <p className="text-xs text-muted-foreground">No folios found</p>
