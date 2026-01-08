@@ -6,22 +6,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [multiSelect, setMultiSelect] = useState(false);
-
-  const handleMultiSelectChange = (value: boolean) => {
-    setMultiSelect(value);
-    if (!value && selectedIds.length > 1) {
-      setSelectedIds([selectedIds[0]]);
-    }
-  };
-
-  const handleRemoveSelection = (id: string) => {
-    setSelectedIds(selectedIds.filter((sid) => sid !== id));
-  };
-
-  const handleClearSelection = () => {
-    setSelectedIds([]);
-  };
 
   return (
     <div className="flex flex-col h-screen w-full bg-background">
@@ -76,16 +60,12 @@ const Index = () => {
           folios={mockFolios}
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
-          multiSelect={multiSelect}
-          onMultiSelectChange={handleMultiSelectChange}
         />
         <main className="flex-1 min-w-0 overflow-hidden">
           <TransactionWorkspace
             folios={mockFolios}
             selectedIds={selectedIds}
             allFolios={mockFolios}
-            onRemoveSelection={handleRemoveSelection}
-            onClearSelection={handleClearSelection}
           />
         </main>
       </div>

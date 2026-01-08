@@ -38,8 +38,6 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
     );
   }
 
-  const total = transactions.reduce((sum, t) => sum + t.amount, 0);
-
   return (
     <Table>
       <TableHeader>
@@ -94,24 +92,6 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
             </TableCell>
           </TableRow>
         ))}
-        {/* Total row */}
-        <TableRow className="border-t-2 border-border bg-muted/50 hover:bg-muted/50">
-          {showFolioColumn && (
-            <TableCell className="text-xs py-2 px-3"></TableCell>
-          )}
-          <TableCell className="text-xs py-2 px-3"></TableCell>
-          <TableCell className="text-xs py-2 px-3 font-semibold text-foreground">
-            Total
-          </TableCell>
-          <TableCell
-            className={cn(
-              "text-xs py-2 px-3 text-right tabular-nums font-bold",
-              type === "payments" && "text-success"
-            )}
-          >
-            {formatAmount(total)}
-          </TableCell>
-        </TableRow>
       </TableBody>
     </Table>
   );
