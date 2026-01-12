@@ -39,21 +39,21 @@ export function TransactionTable({ transactions, type, showFolioColumn = false }
   }
 
   return (
-    <Table>
+    <Table className="table-fixed w-full">
       <TableHeader>
         <TableRow className="hover:bg-transparent border-border">
           {showFolioColumn && (
-            <TableHead className="text-xs font-medium py-2 px-3 bg-table-header">
+            <TableHead className="text-xs font-medium py-2 px-3 bg-table-header w-16">
               Folio
             </TableHead>
           )}
-          <TableHead className="text-xs font-medium py-2 px-3 bg-table-header">
+          <TableHead className="text-xs font-medium py-2 px-3 bg-table-header w-24">
             Date
           </TableHead>
           <TableHead className="text-xs font-medium py-2 px-3 bg-table-header">
             Description
           </TableHead>
-          <TableHead className="text-xs font-medium py-2 px-3 text-right bg-table-header">
+          <TableHead className="text-xs font-medium py-2 px-3 text-right bg-table-header w-28">
             Amount
           </TableHead>
         </TableRow>
